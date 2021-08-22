@@ -1,4 +1,6 @@
 # Section 13 타이핑 게임 만들어보기
+# 타이핑 게임
+# 0822
 
 import random
 import time
