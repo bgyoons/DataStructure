@@ -2,7 +2,6 @@
 # 파이썬 딕셔너리(Dictionary) 타입이 해쉬 테이블의 예
 
 
-
 ### 간단한 해시 예 ###
 # 해시 테이블 저장
 hash_table = list([0 for i in range(10)])
@@ -44,7 +43,6 @@ def get_data(data):
 print(get_data('Andy'))
 
 
-
 ### 프로그래밍 연습 1 : 리스트 변수를 활용해서 해시 테이블 구현해보기
 # 해시함수 : key % 8
 # 해시 키 생성 : hash(data)
@@ -57,7 +55,7 @@ def getKey(data):
 def hashFunction(key):
     return key % 8
 
-def hashKey(data, value):
+def SaveData(data, value):
     # 키 값 생성    => 동시에 해버림..........
     # 해시함수 써서
     # hashAddress = hashFunction(key)
@@ -71,12 +69,80 @@ def ReadData(data):
     hashAddress = hashFunction(getKey(data))
     return hashTable[hashAddress]
 
-hashKey('a', '01029384858')
-hashKey('b', '01098742468')
+SaveData('a', '01029384858')
+SaveData('b', '01098742468')
 print(ReadData('a'))
 print(hashTable)
 
 
+### 충돌(Collision) 해결 알고리즘(좋은 해시 함수 사용하기)
+# Chaining(Open Hashing) 기법
+# 링크드 리스트로 데이터를 추가로 뒤에 연결시켜서 저장하는 기법
+### 프로그래밍 연습 2 : 연습 1의 해시 테이블 코드에 Chaining 기법으로 충동해결 코드 추가
+hashTable = list(0 for i in range(8))
 
-### 충돌 해결 알고리즘(좋은 해시 함수 사용하기)
+def getKey(data):
+    return hash(data)
 
+def hashFunction(key):
+    return key % 8
+
+def SaveData(data, value):
+    index_key = getKey(data)    # 해당 슬롯에 별도 저장
+    hashAddress = hashFunction(index_key)
+    if hashTable[hashAddress] != 0:
+        for index in range(len(hashTable[hashAddress])):
+            if hashTable[hashAddress][index][0] == index_key:
+                hashTable[hashAddress][1] = value
+                return
+        hashTable[hashAddress].append([index_key.value])
+    else:
+        hashTable[hashAddress] = [[index_key, value]]
+
+def ReadData(data):
+    index_key = getKey(data) 
+    hashAddress = hashFunction(index_key)
+    if hashTable[hashAddress] != 0:
+        for index in range(len(hashTable[hashAddress])):
+            if hashTable[hashAddress][index][0] == index_key:
+                return hashTable[hashAddress][index][1]
+        return None    
+    else:
+        return None
+
+# Linear Probing 기법
+# hash address의 다음 address부터 맨 처음 나오는 빈 공간에 저장
+### 프로그래밍 연습 3 : 연습 1의 해시 테이블 코드에 Linear Probing 기법으로 충동 해결 코드 추가
+hashTable = list(0 for i in range(8))
+
+def getKey(data):
+    return hash(data)
+
+def hashFunction(key):
+    return key % 8
+
+def SaveData(data, value):
+    index_key = getKey(data)    # 해당 슬롯에 별도 저장
+    hashAddress = hashFunction(index_key)
+    if hashTable[hashAddress] != 0:
+        for index in range(hashAddress, len(hashTable)):
+            if hashTable[index] == 0:
+                hashTable[index] = [index_key, value]
+                return
+            elif hashTable[index][0] == index_key:
+                hashTable[index][1] = value
+                return
+    else:
+        hashTable[hashAddress] = [index_key, value]
+
+def ReadData(data):
+    index_key = getKey(data) 
+    hashAddress = hashFunction(index_key)
+    if hashTable[hashAddress] != 0:
+        for index in range(hashAddress, len(hashTable)):
+            if hashTable[index][0] == 0:
+                return None
+            elif hashTable[index][0] == index_key:
+                return hashTable[index][1]
+    else:
+        return None
