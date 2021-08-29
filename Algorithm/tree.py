@@ -106,12 +106,12 @@ class NodeMgmt:
         # 삭제할 노드의 오른쪽 자식 중, 가장 작은 값을 삭제할 노드의 부모 노드가 가리키도록 한다.
 
         # 삭제될 노드가 자식 노드를 두 개 가지고 있을 경우
-        if self.current_node.left != None and self.current_node != None:
+        if self.current_node.left != None and self.current_node.right != None:
             # 경우 1-1
             if value < self.current_node.value:
                 self.change_node = self.current_node.right
                 self.change_node_parent = self.current_node.right
-                # 순회
+                # 순회 (경우 2-2)
                 while self.change_node.left != None:
                     self.change_node_parent = self.change_node
                     self.change_node = self.change_node.left
@@ -122,7 +122,7 @@ class NodeMgmt:
                 else:
                     self.change_node_parent.left = None
                 self.parent.left = self.change_node # 부모 왼쪽에 변경할 노드를 위로 올림
-                self.change_node.right = self.current_node.right
+                self.change_node.right = self.change_node_parent
                 self.change_node.left = self.change_node.left
             # 경우 1-2
             else:
@@ -132,12 +132,11 @@ class NodeMgmt:
                 while self.change_node.left != None:
                     self.change_node_parent = self.change_node
                     self.change_node = self.change_node.left
+                self.change_node_parent.left = None
                 if self.change_node.right != None:
                     self.change_node_parent.left = self.change_node.right
                 else: # 노드가 None
                     self.change_node_parent.left = None
-                self.parent.right = self.change_node # 부모 오른쪽에 변경할 노드를 위로 올림
+                self.parent.left = self.change_node # 부모 오른쪽에 변경할 노드를 위로 올림
+                self.change_node.right = self.change_node_parent
                 self.change_node.left = self.current_node.left
-                self.change_node.right = self.current_node.right
-            
-
